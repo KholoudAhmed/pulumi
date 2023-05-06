@@ -1,5 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as vsphere from "@pulumi/vsphere";
+import { getVirtualMachineIpAddress } from "./utils";
+
 
 const datacenter = vsphere.getDatacenter({
   name: "Datacenter",
@@ -38,5 +40,23 @@ function createVirtualMachine(name, poolId, datastoreId, networkId, template) {
 }
 
 
-const vm = createVirtualMachine("VM-UB-Node1", poolId, datastoreId, networkId, template);
+//const vm = createVirtualMachine("VM-UB-Node1", poolId, datastoreId, networkId, template);
 
+export function getVirtualMachineIpAddress(vmName: string): Promise<string> {
+  const datacenter = vsphere.getDatacenter({ name: "Datacenter" });
+
+  const vmData = datacenter.then(dc =>
+    vsphere.getVirtualMachine({
+      name: vmName,
+      datacenterId: dc.id,
+    })
+  );
+
+  return vmData.then(vm => vm.defaultIpAddress);
+}
+
+const ipAddress = pulumi.output(getVirtualMachineIpAddress("VM-UB-Node1"));
+
+ipAddress.apply(ip => {
+  console.log(`Virtual machine IP address: ${ip}`);
+});
