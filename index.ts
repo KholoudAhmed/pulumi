@@ -14,6 +14,8 @@ const networkId = dc.then(dc => vsphere.getNetwork({ name: "VLAN 32", datacenter
 const template = dc.then(dc => vsphere.getVirtualMachine({ name: "Templates/IaC-Ubuntu-Template", datacenterId: dc.id }));
 
 
+/* function to create virtual machine with specific paramters 
+
 function createVirtualMachine(name, poolId, datastoreId, networkId, template) {
   return new vsphere.VirtualMachine(name, {
     resourcePoolId: poolId,
@@ -39,8 +41,11 @@ function createVirtualMachine(name, poolId, datastoreId, networkId, template) {
   });
 }
 
+*/
 
 //const vm = createVirtualMachine("VM-UB-Node1", poolId, datastoreId, networkId, template);
+
+// to get an ip address of virtual machine after making sure that function has been created vm successfully
 
 export function getVirtualMachineIpAddress(vmName: string): Promise<string> {
   const datacenter = vsphere.getDatacenter({ name: "Datacenter" });
